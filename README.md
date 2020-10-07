@@ -9,4 +9,4 @@ It is currently in Alpha but is being updated somewhat frequently.
 It uses RAYLIB to handle drawing to the screen.
   RAYLIB can be found at:https://www.raylib.com/
   RAYLIB LICENSE: https://www.raylib.com/license.html
-  THIS PROJECT USES BUT DOES NOT MODIFY THE RAYLIB. LIBRARY ALL CREDIT GOES TO: https://github.com/raysan5.
+  THIS PROJECT USES BUT DOES NOT MODIFY THE RAYLIB LIBRARY. ALL CREDIT GOES TO: https://github.com/raysan5.
