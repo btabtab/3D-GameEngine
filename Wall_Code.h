@@ -67,6 +67,7 @@ bool isPlayerCollidingWithWall(Player *ptr_player, Wall *ptr_wall)
 	{
 		return true;
 	}
+	return false;
 }
 
 bool hasProjectileHitWall(Projectile *ptr_projectile, Wall *ptr_wall)
@@ -77,10 +78,12 @@ bool hasProjectileHitWall(Projectile *ptr_projectile, Wall *ptr_wall)
 								ptr_projectile->size))
 	//if(CheckCollisionBoxes(ptr_projectile->hitbox, ptr_floor_to_check->hitbox))
 	{
-		Vector3 temp_dir = ptr_projectile->direction;
+		//Vector3 temp_dir = ptr_projectile->direction;
 		ptr_projectile->direction.x = 0;
 		ptr_projectile->direction.y = 0;
 		ptr_projectile->direction.z = 0;
+		return true;
 	}
+	return false;
 }
 #endif

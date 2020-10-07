@@ -15,6 +15,8 @@
 
 #include "Wall_Code.h"
 
+#include "Inventory.h"
+
 #ifndef GAMEFUNCS
 #define GAMEFUNCS
 
@@ -65,16 +67,14 @@ void mainLoop(Framework *ptr_framwork)
 	//Map test;
 	//loadMap(&test);
 
-	Texture2D test_sprite;
-	test_sprite = LoadTexture("test_spr.png");
-
-	Texture2D gun = LoadTexture("gun.png");
+	Texture2D test_sprite_stand = LoadTexture("test_sprite_.png");
+	Texture2D test_sprite_jump = LoadTexture("t_jump.png");
 
 	Floor test_floor;
-	loadFloor(&test_floor, "field_floor.png", (Vector3){0, 0, 0});
+	loadFloor(&test_floor, "pond/", (Vector3){0, 0, 0});
 
 	Floor new_floor;
-	loadFloor(&new_floor, "haha.png", (Vector3){0, 0, 32});
+	loadFloor(&new_floor, "beach/", (Vector3){0, 0, 32});
 
 	int floors = 2;
 	Floor *floor_array[floors];
@@ -95,7 +95,7 @@ void mainLoop(Framework *ptr_framwork)
 	wall_ptr_arr[2] = &wall_c;
 	wall_ptr_arr[3] = &wall_d;
 
-	Texture2D stone_wall_texture = LoadTexture("1024_texture.png");
+	Texture2D stone_wall_texture = LoadTexture("b&wwall.png");
 
 	for (int i = 0; i != walls; i++)
 	{
@@ -104,6 +104,12 @@ void mainLoop(Framework *ptr_framwork)
 
 	Camera prev_frame_cam_data = camera;
 	Camera prev_frame_cam_data2 = prev_frame_cam_data;
+
+	Inventory test_inv;
+	initialiseInventory(&test_inv, (Vector2){screenWidth, screenHeight});
+
+	Entity random_dude;
+	initialiseEntity(&random_dude, "dude/", (Vector3){-1, 2, -1});
 
 	while (!WindowShouldClose()) // Detect window close button or ESC key
 	{
@@ -174,29 +180,46 @@ void mainLoop(Framework *ptr_framwork)
 				}
 				else
 				{	
-					renderProjectileAsSprite(&projectile, &test_sprite, &camera);
+					renderProjectileAsSprite(&projectile, &test_sprite_jump, &camera);
 					// renderProjectile(&projectile);
 				}
-				
+
+				renderEntity(&random_dude, &camera);
+
+				if(isEntityCollidingWithHitbox(&random_dude, attack(&player)))
+				{
+					
+				}
 
 				//renderMap(&test);
 
-				DrawBillboard(camera, test_sprite, (Vector3){0, 1.3, 0}, 1, RAYWHITE);
+				
+				if(IsKeyDown(KEY_SPACE))
+				{
+					DrawBillboard(camera, test_sprite_jump, (Vector3){0, 2, 0}, 1.3, RAYWHITE);
+				}
+				else
+				{
+					DrawBillboard(camera, test_sprite_stand, (Vector3){0, 1.3, 0}, 1, RAYWHITE);
+				}
 
 				//updatePlayerHitbox(&player, &camera);
 
-				/*
-		Yo, yired john here, just use a 3d plane that has the texture draw onto it instead of this mess!!!!!isnvof sleep well!!!!!
-		*/
+				if(IsKeyDown(KEY_F))
+				{
+					DrawBoundingBox(attack(&player), RED);
+				}
+
+				
 			}
 			EndMode3D();
 
 			//DrawTexture(texture, screenWidth - texture.width - 20, 20, WHITE);
 			//DrawRectangleLines(screenWidth - texture.width - 20, 20, texture.width, texture.height, GREEN);
-
 			DrawFPS(10, 10);
 
-			DrawTextureEx(gun, (Vector2){screenWidth / 2 - (gun.width / 2) * 7, screenHeight - (gun.height / 2) * 7}, 0, 7.f, RAYWHITE);
+			renderHeldItem(&test_inv);
+			
 
 			DrawCircle(screenWidth / 2, screenHeight / 2, 1.f, RED);
 		}
@@ -209,7 +232,7 @@ void mainLoop(Framework *ptr_framwork)
 	CloseWindow(); // Close window and OpenGL context
 	//--------------------------------------------------------------------------------------
 
-	return 0;
+	return;
 }
 
 #endif

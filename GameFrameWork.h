@@ -17,13 +17,6 @@ typedef struct Player
 	Camera camera;
 } Player;
 
-void initialisePlayer(Player* ptr_player, Camera* ptr_camera)
-{
-
-	updatePlayerHitbox(ptr_player);
-	ptr_player->hitbox.min.y = 0.1f;
-
-}
 
 void updatePlayerPosFromCam(Player* ptr_player, Camera* ptr_camera)
 {
@@ -37,6 +30,13 @@ void updatePlayerHitbox(Player* ptr_player, Camera* ptr_camera)
 	ptr_player->hitbox.max.z = ptr_camera->position.z + 0.50f;
 	ptr_player->hitbox.min.x = ptr_camera->position.x - 0.50f;
 	ptr_player->hitbox.min.z = ptr_camera->position.z - 0.50f;
+	return;
+}
+
+void initialisePlayer(Player* ptr_player, Camera* ptr_camera)
+{
+	updatePlayerHitbox(ptr_player, ptr_camera);
+	ptr_player->hitbox.min.y = 0.1f;
 }
 
 void fallPlayer(Player* ptr_player, Camera* ptr_camera)
@@ -46,9 +46,10 @@ void fallPlayer(Player* ptr_player, Camera* ptr_camera)
 	ptr_camera->position.y -= 0.1f;
 }
 
-drawPlayerHitbox(Player* ptr_player)
+void drawPlayerHitbox(Player* ptr_player)
 {
 	DrawBoundingBox(ptr_player->hitbox, ORANGE);
+	return;
 }
 
 typedef struct Framework

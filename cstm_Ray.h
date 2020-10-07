@@ -43,9 +43,6 @@ void initialiseProjectile(Projectile* ptr_projectile, Camera3D* ptr_camera, int 
     
     //ptr_projectile->direction.y = 4;
 
-    printf("%i", ptr_projectile->direction.x, "/n" );
-    printf("%i", ptr_projectile->direction.z);
-
     ptr_projectile->direction.x /= 3;
     ptr_projectile->direction.y /= 3;
     ptr_projectile->direction.z /= 3;
