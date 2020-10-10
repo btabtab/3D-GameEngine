@@ -3,6 +3,8 @@
 
 #include "raylib.h"
 
+#include "Item_functions.h"
+
 #include "GameFrameWork.h"
 
 #include "Entity.h"
@@ -16,6 +18,8 @@
 #include "Wall_Code.h"
 
 #include "Inventory.h"
+
+#include "Entity_functions.h"
 
 #ifndef GAMEFUNCS
 #define GAMEFUNCS
@@ -95,21 +99,22 @@ void mainLoop(Framework *ptr_framwork)
 	wall_ptr_arr[2] = &wall_c;
 	wall_ptr_arr[3] = &wall_d;
 
-	Texture2D stone_wall_texture = LoadTexture("b&wwall.png");
-
 	for (int i = 0; i != walls; i++)
 	{
-		initialiseWall(wall_ptr_arr[i], &stone_wall_texture, (Vector3){(i - 2) * 10, 0, (i - 10) * 2});
+		initialiseWall(wall_ptr_arr[i], "trchstn/", (Vector3){(i - 2) * 10, 0, (i - 10) * 2});
 	}
 
 	Camera prev_frame_cam_data = camera;
 	Camera prev_frame_cam_data2 = prev_frame_cam_data;
 
-	Inventory test_inv;
-	initialiseInventory(&test_inv, (Vector2){screenWidth, screenHeight});
+	Item t_item; Vector2 screen_dimensions = (Vector2){screenWidth, screenHeight};
+	inititaliseItem(&t_item, "magic/", &screen_dimensions, MAGIC, &itemLaunchProjectile);
 
 	Entity random_dude;
-	initialiseEntity(&random_dude, "dude/", (Vector3){-1, 2, -1});
+	initialiseEntity(&random_dude, "totem/", (Vector3){-1, 2, -1});
+	random_dude.ptr_behaviourfunc = totemBehaviour;
+
+	loadProjectileFrames(&projectile, "projectile/");
 
 	while (!WindowShouldClose()) // Detect window close button or ESC key
 	{
@@ -147,7 +152,7 @@ void mainLoop(Framework *ptr_framwork)
 					{
 						camera = prev_frame_cam_data;
 						player.position = prev_frame_cam_data.position;
-						updatePlayerHitbox(&player, &camera);
+						updatePlayerHitbox(&player);
 					}
 					else
 					{
@@ -160,8 +165,8 @@ void mainLoop(Framework *ptr_framwork)
 				}
 				prev_frame_cam_data2.position = player.position;
 
-				updatePlayerPosFromCam(&player, &camera);
-				updatePlayerHitbox(&player, &camera);
+				updatePlayerPosFromCam(&player);
+				updatePlayerHitbox(&player);
 
 				//drawWall(&test_w);
 				//drawWall(&sphere_w);
@@ -169,22 +174,22 @@ void mainLoop(Framework *ptr_framwork)
 				//drawEntity(&test_animal);
 
 				//updateProjectile(&projectile);
-				updateThrownProjectile(&projectile, 0.0001f);
 
 				//checkCollisionWithFloor(&projectile, &test_floor);
 
 				if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 				{
 					killProjectile(&projectile);
-					initialiseProjectile(&projectile, &camera, 1000);
+					startUsingItem(&t_item, &player, &projectile);
 				}
 				else
-				{	
-					renderProjectileAsSprite(&projectile, &test_sprite_jump, &camera);
+				{
 					// renderProjectile(&projectile);
 				}
 
+				renderProjectileAsSprite(&projectile, &player);
 				renderEntity(&random_dude, &camera);
+				updateEntityHitbox(&random_dude);
 
 				if(isEntityCollidingWithHitbox(&random_dude, attack(&player)))
 				{
@@ -210,7 +215,18 @@ void mainLoop(Framework *ptr_framwork)
 					DrawBoundingBox(attack(&player), RED);
 				}
 
-				
+				if(IsKeyPressed(KEY_R))
+				{
+				}
+				if(IsKeyPressed(KEY_T))
+				{
+				}
+
+				if(player.has_attacked == true)
+				{
+					isEntityCollidingWithHitbox(&random_dude, attack(&player));
+				}
+
 			}
 			EndMode3D();
 
@@ -218,10 +234,11 @@ void mainLoop(Framework *ptr_framwork)
 			//DrawRectangleLines(screenWidth - texture.width - 20, 20, texture.width, texture.height, GREEN);
 			DrawFPS(10, 10);
 
-			renderHeldItem(&test_inv);
+			renderHeldItem(&t_item, screen_dimensions);
+			updateUseCycle(&t_item, &player, &projectile);
 			
+			DrawCircle(screenWidth / 2, screenHeight / 2, 1, RED);
 
-			DrawCircle(screenWidth / 2, screenHeight / 2, 1.f, RED);
 		}
 		EndDrawing();
 		//----------------------------------------------------------------------------------

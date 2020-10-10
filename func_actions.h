@@ -16,6 +16,9 @@ TODO:
 // This will return the hitbox of the attack.
 BoundingBox attack(Player* ptr_player)
 {
+    
+    //ptr_player->inventory.items;
+
     BoundingBox attack_box = ptr_player->hitbox;
 
     attack_box.max.x += +1.4f;
