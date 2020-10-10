@@ -28,11 +28,17 @@ typedef struct Entity
 	char name[12];
 
 	// This is a function pointer to the entities behaviour/what they should do.
-	void (*behaviourFunc)(Vector3);
 
 	BoundingBox hitbox;
 
-} Entity;
+	Projectile* attack_projectile;
+
+	void (*ptr_behaviourfunc)(Vector3*, int*);
+	BoundingBox (*ptr_behaviourattack)(Player* , Projectile*);
+
+	int behaviour_path;
+
+}Entity;
 
 typedef struct MemoryManager
 {
@@ -148,6 +154,16 @@ void initialiseEntity(Entity* ptr_entity, char entity_name[10], Vector3 position
 
 }
 
+void updateEntityHitbox(Entity* ptr_entity)
+{
+	ptr_entity->hitbox.max.x = ptr_entity->position.x + 0.50f;
+	ptr_entity->hitbox.max.y = ptr_entity->position.y + 1.f;
+	ptr_entity->hitbox.max.z = ptr_entity->position.z + 0.50f;
+	ptr_entity->hitbox.min.x = ptr_entity->position.x - 0.50f;
+	ptr_entity->hitbox.min.z = ptr_entity->position.z - 0.50f;
+
+}
+
 void renderEntity(Entity* ptr_entity, Camera* ptr_camera)
 {
 
@@ -159,6 +175,8 @@ void renderEntity(Entity* ptr_entity, Camera* ptr_camera)
 	ptr_entity->current_frame++;
 
 	DrawBoundingBox(ptr_entity->hitbox, ORANGE);
+	
+	ptr_entity->ptr_behaviourfunc(&ptr_entity->position, &ptr_entity->behaviour_path);
 
 }
 
